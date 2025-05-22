@@ -29,19 +29,19 @@ http
   .createServer((request, response) => {
     const url = request.url;
     response.writeHead(200, { "Content-Type": "text/html" });
-  switch(url){
-    case "/registration":
-      response.write(registrationContent);
-      response.end();
-      break;
-    case "/project":
-      response.write(projectContent);
-      response.end();
-      break;
-    default:
-      response.write(homeContent);
-      response.end();
-      break;
+    switch (url) {
+      case "/registration":
+        response.write(registrationContent);
+        response.end();
+        break;
+      case "/project":
+        response.write(projectContent);
+        response.end();
+        break;
+      default:
+        response.write(homeContent);
+        response.end();
+        break;
     }
   })
   .listen(port, () => {
