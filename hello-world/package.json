@@ -3,10 +3,15 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+<<<<<<< HEAD
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "description": ""
+=======
+    "start": "node index.js"
+  }
+>>>>>>> 43ec1ae2630b56e318b4eb2b0952cdf021fc5cb2
 }

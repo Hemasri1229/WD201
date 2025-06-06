@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 const hello = () => {
   console.log("Hello Github!");
 };
@@ -33,3 +34,6 @@ fs.unlink("test.txt", (err) => {
   if (err) throw err;
   console.log("File test.txt deleted successfully!");
 });
+=======
+console.log("Hello GitHub!");
+>>>>>>> 43ec1ae2630b56e318b4eb2b0952cdf021fc5cb2
