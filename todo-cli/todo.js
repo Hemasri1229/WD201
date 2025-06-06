@@ -1,48 +1,64 @@
-const todoList = () => {
-  let all = [];
-  const add = (todoItem) => {
-    all.push(todoItem);
-  };
-  const markAsComplete = (index) => {
-    all[index].completed = true;
-  };
+const fs = require("fs");
+const path = require("path");
 
-  const overdue = () => {
-    return all.filter(
-      (item) => item.dueDate < new Date().toLocaleDateString("en-CA"),
-    );
-  };
+const todoFile = path.join(__dirname, "todos.json");
+const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
 
-  const dueToday = () => {
-    return all.filter(
-      (item) => item.dueDate === new Date().toLocaleDateString("en-CA"),
-    );
-  };
+function loadTodos() {
+  try {
+    return JSON.parse(fs.readFileSync(todoFile, "utf-8"));
+  } catch {
+    return [];
+  }
+}
 
-  const dueLater = () => {
-    return all.filter(
-      (item) => item.dueDate > new Date().toLocaleDateString("en-CA"),
-    );
-  };
+function saveTodos(todos) {
+  fs.writeFileSync(todoFile, JSON.stringify(todos, null, 2));
+}
 
-  const toDisplayableList = (list) => {
-    return list
-      .map(
-        (item) =>
-          `${item.completed ? "[x]" : "[ ]"} ${item.title} ${item.dueDate !== "" ? `(${item.dueDate})` : ""}`,
-      )
-      .join("\n");
-  };
+function add(title, dueDate) {
+  const todos = loadTodos();
+  todos.push({ title, dueDate, completed: false });
+  saveTodos(todos);
+}
 
-  return {
-    all,
-    add,
-    markAsComplete,
-    overdue,
-    dueToday,
-    dueLater,
-    toDisplayableList,
-  };
-};
+function markAsComplete(index) {
+  const todos = loadTodos();
+  if (todos[index]) {
+    todos[index].completed = true;
+    saveTodos(todos);
+  }
+}
 
-module.exports = todoList;
+function formattedTodo(todo) {
+  const checkbox = todo.completed ? "[x]" : "[ ]";
+  return `${checkbox} ${todo.title}${todo.dueDate !== today ? " " + todo.dueDate : ""}`;
+}
+
+function displayTodos() {
+  const todos = loadTodos();
+
+  const overdue = todos.filter(t => t.dueDate < today);
+  const dueToday = todos.filter(t => t.dueDate === today);
+  const dueLater = todos.filter(t => t.dueDate > today);
+
+  console.log("My Todo-list\n");
+
+  console.log("Overdue");
+  overdue.forEach(t => console.log(formattedTodo(t)));
+  console.log("\nDue Today");
+  dueToday.forEach(t => console.log(formattedTodo(t)));
+  console.log("\nDue Later");
+  dueLater.forEach(t => console.log(formattedTodo(t)));
+}
+
+// Command line interface
+const args = process.argv.slice(2);
+if (args[0] === "add") {
+  add(args[1], args[2]);
+} else if (args[0] === "markAsComplete") {
+  markAsComplete(parseInt(args[1]));
+} else if (args[0] === "list") {
+  displayTodos();
+}
+
